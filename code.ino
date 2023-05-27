@@ -1,5 +1,6 @@
 #include <Wire.h>        // include the I2C library
 #include <LiquidCrystal_I2C.h>   // include the LCD I2C library
+#include <Servo.h>
 
 #define ENTRY_SENSOR 3   // define the digital pin for entry sensor
 #define EXIT_SENSOR 4    // define the digital pin for exit sensor
@@ -9,11 +10,14 @@
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);  // initialize the LCD I2C object
 
+Servo myServo;
+
 int car_count = 0;   // initialize the car count to zero
 bool entry_flag = false;  // initialize the entry flag to false
 bool exit_flag = false;   // initialize the exit flag to false
 
 void setup() {
+  myServo.attach(SERVO_PIN);
   pinMode(ENTRY_SENSOR, INPUT);   // set the entry sensor pin as input
   pinMode(EXIT_SENSOR, INPUT);    // set the exit sensor pin as input
   pinMode(SERVO_PIN, OUTPUT);     // set the servo motor pin as output
@@ -35,6 +39,11 @@ void loop() {
       car_count++;   // increment the car count
       lcd.setCursor(11, 1);   // set the cursor to the second row, column 11
       lcd.print(TOTAL_SLOTS - car_count);  // update the available slots on the LCD
+
+      myServo.write(90); // rotate the servo 90 degrees
+      delay(2000); // wait for 2 seconds
+      myServo.write(0); // rotate the servo back to 0 degrees
+
       entry_flag = true;   // set the entry flag to true
     }
   }
@@ -46,6 +55,11 @@ void loop() {
       car_count--;   // decrement the car count
       lcd.setCursor(11, 1);   // set the
       lcd.print(TOTAL_SLOTS - car_count); // update the available slots on the on the LCD
+
+      myServo.write(90); // rotate the servo 90 degrees
+      delay(2000); // wait for 2 seconds
+      myServo.write(0); // rotate the servo back to 0 degrees
+
  exit_flag = true; // set the exit flag to true
  }
  }
